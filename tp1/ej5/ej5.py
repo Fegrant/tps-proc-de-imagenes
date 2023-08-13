@@ -29,6 +29,83 @@ def decimate_image_avg(image_array, block_size):
     return decimated_image
 
 
+# Interpolation kernel
+def u(s, a):
+    if abs(s) >= 0 and abs(s) <= 1:
+        return (a + 2) * (abs(s) ** 3) - (a + 3) * (abs(s) ** 2) + 1
+    elif abs(s) > 1 and abs(s) <= 2:
+        return a * (abs(s) ** 3) - 5 * a * (abs(s) ** 2) + 8 * a * abs(s) - 4 * a
+    return 0
+
+def padding(img, H, W):
+    zimg = np.zeros((H + 4, W + 4))
+    zimg[2:H + 2, 2:W + 2] = img
+
+    zimg[2:H + 2, 0:2] = img[:, 0:1]
+    zimg[H + 2:H + 4, 2:W + 2] = img[H - 1:H, :]
+    zimg[2:H + 2, W + 2:W + 4] = img[:, W - 1:W]
+    zimg[0:2, 2:W + 2] = img[0:1, :]
+
+    zimg[0:2, 0:2] = img[0, 0]
+    zimg[H + 2:H + 4, 0:2] = img[H - 1, 0]
+    zimg[H + 2:H + 4, W + 2:W + 4] = img[H - 1, W - 1]
+    zimg[0:2, W + 2:W + 4] = img[0, W - 1]
+    return zimg
+
+def bicubic(img, ratio, a):
+    H, W = img.shape
+    img = padding(img, H, W)
+
+    dH = math.floor(H * ratio)
+    dW = math.floor(W * ratio)
+
+    dst = np.zeros((dH, dW))
+    h = 1 / ratio
+
+
+    for j in range(dH):
+        for i in range(dW):
+            x, y = i * h + 2, j * h + 2
+
+        
+           
+            x1 = max(min(1 + x - math.floor(x), W - 1), 0)
+            x2 = max(min(x - math.floor(x), W - 1), 0)
+            x3 = max(min(math.floor(x) + 1 - x, W - 1), 0)
+            x4 = max(min(math.floor(x) + 2 - x, W - 1), 0)
+
+            y1 = max(min(1 + y - math.floor(y), H - 1), 0)
+            y2 = max(min(y - math.floor(y), H - 1), 0)
+            y3 = max(min(math.floor(y) + 1 - y, H - 1), 0)
+            y4 = max(min(math.floor(y) + 2 - y, H - 1), 0)
+            x, y = i * h + 2, j * h + 2
+
+            mat_l = np.array([[u(x1, a), u(x2, a), u(x3, a), u(x4, a)]])
+            mat_m = np.array([[img[int(y - y1), int(x - x1)],
+                               img[int(y - y2), int(x - x1)],
+                               img[int(y + y3), int(x - x1)],
+                               img[int(y + y4), int(x - x1)]],
+                              [img[int(y - y1), int(x - x2)],
+                               img[int(y - y2), int(x - x2)],
+                               img[int(y + y3), int(x - x2)],
+                               img[int(y + y4), int(x - x2)]],
+                              [img[int(y - y1), int(x + x3)],
+                               img[int(y - y2), int(x + x3)],
+                               img[int(y + y3), int(x + x3)],
+                               img[int(y + y4), int(x + x3)]],
+                              [img[int(y - y1), int(x + x4)],
+                               img[int(y - y2), int(x + x4)],
+                               img[int(y + y3), int(x + x4)],
+                               img[int(y + y4), int(x + x4)]]])
+            mat_r = np.array(
+                [[u(y1, a)], [u(y2, a)], [u(y3, a)], [u(y4, a)]])
+
+            dst[j, i] = np.dot(np.dot(mat_l, mat_m), mat_r)
+
+    return dst
+  
+  
+
 
 def bilinear_interpolation(image, y, x):
     height = image.shape[0]
@@ -52,89 +129,6 @@ def bilinear_interpolation(image, y, x):
     new_pixel += c * dx * (1 - dy)
     new_pixel += d * dx * dy
     return round(new_pixel)
-
-
-  
-  
-# Interpolation kernel
-def u(s, a):
-    if (abs(s) >= 0) & (abs(s) <= 1):
-        return (a+2)*(abs(s)**3)-(a+3)*(abs(s)**2)+1
-    elif (abs(s) > 1) & (abs(s) <= 2):
-        return a*(abs(s)**3)-(5*a)*(abs(s)**2)+(8*a)*abs(s)-4*a
-    return 0
-  
-def u(s, a):
-    if abs(s) >= 0 and abs(s) <= 1:
-        return (a+2)*(abs(s)**3) - (a+3)*(abs(s)**2) + 1
-    elif abs(s) > 1 and abs(s) <= 2:
-        return a*(abs(s)**3) - 5*a*(abs(s)**2) + 8*a*abs(s) - 4*a
-    return 0
-
-def padding(img, H, W):
-    zimg = np.zeros((H+4, W+4))
-    zimg[2:H+2, 2:W+2] = img
-
-    zimg[2:H+2, 0:2] = img[:, 0:1]
-    zimg[H+2:H+4, 2:W+2] = img[H-1:H, :]
-    zimg[2:H+2, W+2:W+4] = img[:, W-1:W]
-    zimg[0:2, 2:W+2] = img[0:1, :]
-
-    zimg[0:2, 0:2] = img[0, 0]
-    zimg[H+2:H+4, 0:2] = img[H-1, 0]
-    zimg[H+2:H+4, W+2:W+4] = img[H-1, W-1]
-    zimg[0:2, W+2:W+4] = img[0, W-1]
-    return zimg
-
-def bicubic(img, ratio, a):
-    H, W = img.shape
-    img = padding(img, H, W)
-    
-    dH = math.floor(H * ratio)
-    dW = math.floor(W * ratio)
-    
-    dst = np.zeros((dH, dW))
-    h = 1 / ratio
-    
-    for j in range(dH):
-        for i in range(dW):
-            x, y = i * h + 2, j * h + 2
-            x1 = 1 + x - math.floor(x)
-            x2 = x - math.floor(x)
-            x3 = math.floor(x) + 1 - x
-            x4 = math.floor(x) + 2 - x
-
-            y1 = 1 + y - math.floor(y)
-            y2 = y - math.floor(y)
-            y3 = math.floor(y) + 1 - y
-            y4 = math.floor(y) + 2 - y
-
-            mat_l = np.array([[u(x1, a), u(x2, a), u(x3, a), u(x4, a)]])
-            mat_m = np.array([[img[int(y-y1), int(x-x1)],
-                               img[int(y-y2), int(x-x1)],
-                               img[int(y+y3), int(x-x1)],
-                               img[int(y+y4), int(x-x1)]],
-                              [img[int(y-y1), int(x-x2)],
-                               img[int(y-y2), int(x-x2)],
-                               img[int(y+y3), int(x-x2)],
-                               img[int(y+y4), int(x-x2)]],
-                              [img[int(y-y1), int(x+x3)],
-                               img[int(y-y2), int(x+x3)],
-                               img[int(y+y3), int(x+x3)],
-                               img[int(y+y4), int(x+x3)]],
-                              [img[int(y-y1), int(x+x4)],
-                               img[int(y-y2), int(x+x4)],
-                               img[int(y+y3), int(x+x4)],
-                               img[int(y+y4), int(x+x4)]]])
-            mat_r = np.array(
-                [[u(y1, a)], [u(y2, a)], [u(y3, a)], [u(y4, a)]])
-
-            dst[j, i] = np.dot(np.dot(mat_l, mat_m), mat_r)
-
-    return dst
-  
-  
-
 
 interpolation_functions = {
     "bilinear": bilinear_interpolation,
@@ -174,12 +168,12 @@ def main():
     
     # Tamaño del bloque
     block_size = 4
-    ratio = 2
-    a = -1/2
+    ratio = 4
+    a = -1/4
 
     # Cargar la imagen
     image_path = "mono.bmp"
-    original_image = Image.open(image_path)
+    original_image = Image.open(image_path).convert('L')
     # Convertir la imagen a un array numpy
     image_array = np.array(original_image)
 
@@ -196,7 +190,7 @@ def main():
     image.save("decimated_pixel_22.bmp")  
 
     #bilinear interpolation 2_2
-    new_height, new_width = image_array.shape[0] * 2, image_array.shape[1] * 2
+    new_height, new_width = image_array.shape[0], image_array.shape[1]
     interpolated_image = resize(decimated_pixel_22, new_height, new_width)
     interpolated_pil_image  = Image.fromarray(interpolated_image.astype('uint8'))
     interpolated_pil_image.save("interpolated_image_22.bmp")
