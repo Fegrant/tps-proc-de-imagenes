@@ -66,9 +66,6 @@ def bicubic(img, ratio, a):
     for j in range(dH):
         for i in range(dW):
             x, y = i * h + 2, j * h + 2
-
-        
-           
             x1 = max(min(1 + x - math.floor(x), W - 1), 0)
             x2 = max(min(x - math.floor(x), W - 1), 0)
             x3 = max(min(math.floor(x) + 1 - x, W - 1), 0)
@@ -136,7 +133,7 @@ interpolation_functions = {
 
 
 def resize(image, new_height, new_width, interpolation_type="bilinear"):
-    new_image = np.zeros((new_height, new_width), image.dtype)  # new_image = [[0 for _ in range(new_width)] for _ in range(new_height)]
+    new_image = np.zeros((new_height, new_width), image.dtype)  
 
     orig_height = image.shape[0]
     orig_width = image.shape[1]
@@ -177,13 +174,26 @@ def main():
     # Convertir la imagen a un array numpy
     image_array = np.array(original_image)
 
-    # Graficar el espectro de la imagen original
-    original_spectrum = np.fft.fftshift(np.fft.fft2(image_array))
-    plt.imshow(np.log(np.abs(original_spectrum) + 1), cmap='pink')
-    plt.title("Espectro de la imagen original")
+    # Calcular la transformada de Fourier 2D
+    image_spectrum = np.fft.fftshift(np.fft.fft2(image_array))
+
+    # Calcular el valor absoluto del espectro
+    magnitude_spectrum = np.abs(image_spectrum)
+
+    # Aplicar una escala logarítmica para mejorar la visualización
+    log_magnitude_spectrum = np.log(magnitude_spectrum + 1)
+
+    # Graficar el espectro de frecuencia
+    plt.imshow(log_magnitude_spectrum, cmap='pink')
+    plt.title("Espectro de Frecuencia de la Imagen")
+    plt.xlabel("Frecuencia en el eje X")
+    plt.ylabel("Frecuencia en el eje Y")
+    plt.colorbar(label='Log Magnitud')
+
+    # Mostrar la grilla
+    plt.grid(True, which='both', linestyle='--', color='gray', linewidth=0.5)
     plt.show()
-
-
+    
     #decimated 2_2
     decimated_pixel_22 = decimate_image(image_array,(1, 1),block_size)
     image  = Image.fromarray(decimated_pixel_22.astype('uint8'))
