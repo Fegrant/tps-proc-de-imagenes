@@ -8,7 +8,7 @@ def delete_alternate_column(image_path):
     new_width = width // 2
     new_height = height // 2
 
-    result_image = Image.new("RGB", (new_width, new_height))
+    result_image = Image.new(image.mode, (new_width, new_height))
     result_image_pixels = []
 
     for y in range(0, height, 2):  # Borrar filas pares
@@ -23,7 +23,7 @@ def delete_alternate_column(image_path):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     input_image_path = "Fig0219(rose1024).jpg"
-    # input_image_path = "building.jpg"
+    # input_image_path = "Rose64.jpg"
 
     new_image, updated_width = delete_alternate_column(input_image_path)
 
