@@ -9,20 +9,21 @@ def delete_alternate_column(image_path):
     new_height = height // 2
 
     result_image = Image.new("RGB", (new_width, new_height))
+    result_image_pixels = []
 
     for y in range(0, height, 2):  # Borrar filas pares
-        new_row = []
         for x in range(0, width, 2):  # Borrar columnas pares
             pixel = image.getpixel((x, y))
-            new_row.append(pixel)
-        result_image.putdata(new_row)
+            result_image_pixels.append(pixel)
 
-    return image, new_width
+    result_image.putdata(result_image_pixels)
+    return result_image, new_width
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    input_image_path = "rose1024.jpg"
+    input_image_path = "Fig0219(rose1024).jpg"
+    # input_image_path = "building.jpg"
 
     new_image, updated_width = delete_alternate_column(input_image_path)
 
