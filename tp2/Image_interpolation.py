@@ -17,4 +17,4 @@ new_height = 1024
 for index, image in enumerate(images):
     interpolated_image = image.resize((new_width, new_height), Image.NEAREST)
     # Guardar la imagen interpolada
-    interpolated_image.save(f"interpolated_image{index}.jpg")
+    interpolated_image.save(f"results/interpolated_image{index}.jpg")
