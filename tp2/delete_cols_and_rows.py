@@ -20,7 +20,7 @@ def delete_alternate_column(image_path):
     return result_image, new_width
 
 
-input_image_path = "image_sources/Fig0219(rose1024).jpg"
+input_image_path = "results/Rose32.jpg"
 # input_image_path = "Rose64.jpg"
 
 new_image, updated_width = delete_alternate_column(input_image_path)
