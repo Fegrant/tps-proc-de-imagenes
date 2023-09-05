@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-image_a = cv2.imread('image_sources/dog1ss.jpg', cv2.IMREAD_GRAYSCALE)
-image_b = cv2.imread('image_sources/dog2ss.jpg', cv2.IMREAD_GRAYSCALE)
+image_a = cv2.imread('image_sources/dog2ss.jpg', cv2.IMREAD_GRAYSCALE)
+image_b = cv2.imread('image_sources/dog1ss.jpg', cv2.IMREAD_GRAYSCALE)
 
 dft_a = np.fft.fft2(image_a)
 I_a = np.fft.fftshift(dft_a)
@@ -30,6 +30,6 @@ print(delta_center)
 # Representación visual de la delta
 plt.figure(figsize=(12, 6))
 plt.subplot(121), plt.imshow(ruv, cmap='gist_gray')
-plt.title('Original Image'), plt.xticks([]), plt.yticks([])
+plt.title('r(u,v)'), plt.xticks([]), plt.yticks([])
 
 plt.show()
