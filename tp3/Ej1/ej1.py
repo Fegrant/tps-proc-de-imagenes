@@ -8,6 +8,6 @@ sequence = [3, 5, 9, 15, 25, 35, 45, 55]
 for k in sequence:
     k_size = (k, k)  # Kernel size, adjust as needed
     blurred_image = cv2.GaussianBlur(image, k_size, 0)
-    cv2.imwrite(f"../results/low_pass_filtered_image{k}.jpg", blurred_image)
+    cv2.imwrite(f"./results/low_pass_filtered_image{k}.jpg", blurred_image)
 
 
