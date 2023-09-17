@@ -1,12 +1,18 @@
 cutoff = 10;
 order = 2;
 
-im=double(imread('tun.jpg'));
+image=double(imread('tun.jpg'));
 
-[x, y]=size(im);
+[x, y]=size(image);
 
+%log
+image_logued=log2(1+image);
 
-%Butterworth filter
+%DFT
+image_dft=fft2(image_logued);
+
+%Filter
+
 A=zeros(x,y);
 for i=1:x
     for j=1:y
@@ -15,25 +21,18 @@ for i=1:x
     end
 end
 
-alphaL=.0999;
-aplhaH=1.01;
+Yh=.0999;
+Yl=1.01;
 
-H=((aplhaH-alphaL).*H)+alphaL;
+H=((Yl-Yh).*H)+Yh;
 H=1-H;
 
-%log
-im_l=log2(1+im);
-
-%DFT
-im_f=fft2(im_l);
-
-%Filter
-im_nf=H.*im_f;
+image_f=H.*image_dft;
 
 %Inverse DFT
-im_n=abs(ifft2(im_nf));
+image_n=abs(ifft2(image_f));
 
 %Inverse log
-im_e=exp(im_n);
+image_final=exp(image_n);
 
-figure, imshow((im_e),[])
+figure, imshow((image_final),[])
