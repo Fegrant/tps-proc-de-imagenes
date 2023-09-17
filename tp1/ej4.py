@@ -4,9 +4,9 @@ import matplotlib.patches as patches
 # Crear una figura y un eje
 fig, ax = plt.subplots()
 
-color_1 = 63 / 255
-color_2 = 223 / 255
-color_variable = 127 / 255
+color_1 = 97 / 255
+color_2 = 187 / 255
+color_variable = 110 / 255
 
 square1_outside = (color_1, color_1, color_1)
 square2_outside = (color_2, color_2, color_2)
