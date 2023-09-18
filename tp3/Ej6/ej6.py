@@ -15,7 +15,7 @@ epsilon = 1e-8  # Small positive constant
 gray_image_offset = gray_image + epsilon
 
 # Calculate the logarithm
-image_logued = np.log2(1 + gray_image_offset)
+image_logued = np.log(1 + gray_image_offset)
 
 # DFT
 image_dft = np.fft.fft2(image_logued)
@@ -54,4 +54,4 @@ max_val = np.max(image_final)
 image_adjusted = ((image_final - min_val) / (max_val - min_val) * 255).astype(np.uint8)
 
 # Display the final image
-cv2.imwrite('./results/homomorphicImage.jpg', image_adjusted)
+cv2.imwrite('./results/homomorphicImageLn.jpg', image_adjusted)
