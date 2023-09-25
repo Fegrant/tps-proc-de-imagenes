@@ -13,6 +13,9 @@ i_edge_enhace.save("image_filter_enhace.jpg")
 
 i_edge_enhace_more.save("image_filter_enhace_more.jpg")
 
+invert = ImageOps.invert(i_edge_enhace_more)
+
+invert.save("enhace_more_invert.png")
 
 original_image = image.convert('L')
 b = np.array(original_image)
@@ -20,7 +23,6 @@ b = np.array(original_image)
 h = np.array([[0, -1, 0],
              [-1, 5, -1],
               [0, -1, 0]])
-
 
 # Apply the filter to the image
 i_high_pass = cv2.filter2D(b, -1, h)
