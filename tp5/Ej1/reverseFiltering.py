@@ -3,46 +3,42 @@ import cv2
 from scipy.signal import convolve2d
 from scipy.fft import fft2, ifft2, fftshift, ifftshift
 import matplotlib.pyplot as plt
+import imageio
+from scipy.fftpack import fftn, ifftn, fftshift
 
 
-def create_gaussian_psf(size, sigma):
-    print("psf")
-    x = np.linspace(-size // 2, size // 2, size)
-    y = np.linspace(-size // 2, size // 2, size)
-    xv, yv = np.meshgrid(x, y)
-    psf = np.exp(-(xv**2 + yv**2) / (2 * sigma**2))
-    psf /= np.sum(psf)  # Normalize the PSF
-    return psf
+def gaussian_filter(k=5, sigma=1.0):
+    arx = np.arange((-k // 2) + 1.0, (k // 2) + 1.0)
+    x, y = np.meshgrid(arx, arx)
+    filt = np.exp(-(1 / 2) * (np.square(x) + np.square(y)) / np.square(sigma))
+    return filt / np.sum(filt)
 
 
-original_image = cv2.imread("../image_sources/img.png", cv2.IMREAD_GRAYSCALE)
+f = cv2.imread("../image_sources/img.png", cv2.IMREAD_GRAYSCALE)
 
-psf_size = 15
-psf_sigma = 2.0
-psf = create_gaussian_psf(psf_size, psf_sigma)
+# f = imageio.imread("../image_sources/img.png")
+h = gaussian_filter(k=7, sigma=2.5)
 
+# computing the number of padding on one side
+a = int(f.shape[0] // 2 - h.shape[0] // 2)
+h_pad = np.pad(h, (a, a - 1), 'constant', constant_values=(0))
 
-degraded_image = convolve2d(original_image, psf, 'same', 'symm')
+# computing the Fourier transforms
+F = fftn(f)
+H = fftn(h_pad)
 
-# noise_stddev = 10
-# degraded_image += np.random.normal(0, noise_stddev, degraded_image.shape).astype(np.uint8)
+# convolution
+G = np.multiply(F, H)
 
-cv2.imwrite("results/degraded_image.jpg", degraded_image)
+# Inverse Transform
+# - we have to perform FFT shift before reconstructing the image in the space domain
+g = fftshift(ifftn(G).real)
 
-# Ensure PSF and blurred image have the same dimensions
-psf = np.pad(psf, [(0, degraded_image.shape[0] - psf.shape[0]), (0, degraded_image.shape[1] - psf.shape[1])], mode='constant')
+cv2.imwrite("results/degraded_image.jpg", g)
 
-# Perform Fourier Transform on the image and the PSF
-image_fft = fft2(degraded_image)
-psf_fft = fft2(psf)
+# reverse filter  F_hat = G/H
+F_hat = np.divide(G, H)
 
-# Avoid division by zero, add a small constant to the PSF FFT
-psf_fft += 1e-5
+f_hat = ifftn(F_hat).real
 
-# Inverse filtering
-restored_image_fft = image_fft / psf_fft
-
-# Inverse Fourier Transform
-restored_image = np.abs(ifft2(restored_image_fft))
-cv2.imwrite("results/restoredImage.jpg", restored_image)
-print("restored")
+cv2.imwrite("results/restoredImage.jpg", f_hat)
