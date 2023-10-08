@@ -16,7 +16,7 @@ def gaussian_filter(k=5, sigma=1.0):
 
 f = cv2.imread("../image_sources/img.png", cv2.IMREAD_GRAYSCALE)
 
-h = gaussian_filter(k=7, sigma=2.5)
+h = gaussian_filter(k=9, sigma=1.5)
 
 # computing the number of padding on one side
 a = int(f.shape[0] // 2 - h.shape[0] // 2)
