@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     # Display results
     display = [img, blurred_img, noisy_img, filtered_img]
-    label = ['Original_Image', 'Motion_Blurred_Image', 'Motion_Blurring + Gaussian_Noise', 'Wiener_Filter_applied']
+    label = ['Motion_Blurred_Image', 'Motion_Blurring + Gaussian_Noise', 'Wiener_Filter_applied']
 
     for i in range(len(display)):
         cv2.imwrite(f"results/{label[i]}.png", display[i])
