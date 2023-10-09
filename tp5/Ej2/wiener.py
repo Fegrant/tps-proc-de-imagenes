@@ -40,20 +40,20 @@ def gaussian_kernel(kernel_size=3):
 
 if __name__ == '__main__':
     # Load image and convert it to gray scale
-    img = cv2.imread("../image_sources/lena1000p.jpg", cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread("../image_sources/img.png", cv2.IMREAD_GRAYSCALE)
 
     # Blur the image
-    blurred_img = blur(img, kernel_size=7)
+    blurred_img = blur(img, kernel_size=9)
 
     # Add Gaussian noise
     noisy_img = add_gaussian_noise(blurred_img, sigma=20)
 
     # Apply Wiener Filter
-    kernel = gaussian_kernel(5)
-    filtered_img = wiener_filter(noisy_img, kernel, K=10)
+    kernel = gaussian_kernel(9)
+    filtered_img = wiener_filter(noisy_img, kernel, K=0.5)
 
     # Display results
-    display = [img, blurred_img, noisy_img, filtered_img]
+    display = [blurred_img, noisy_img, filtered_img]
     label = ['Motion_Blurred_Image', 'Motion_Blurring + Gaussian_Noise', 'Wiener_Filter_applied']
 
     for i in range(len(display)):
