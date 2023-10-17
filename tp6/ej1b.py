@@ -5,9 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 
 matplotlib.use('TkAgg')
-from matplotlib import colors
 from mpl_toolkits.mplot3d import Axes3D  # noqa
-from matplotlib.colors import hsv_to_rgb
 
 bird = cv2.imread("imagenes/bird.jpg")
 
@@ -18,6 +16,10 @@ img2 = cv2.bilateralFilter(img_gaussian, 9, 75, 75)
 
 img_hsv = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
 H, S, V = cv2.split(img_hsv)
+hist_H = cv2.calcHist([H], [0], None, [256], [0, 256])
+hist_H = cv2.normalize(hist_H, hist_H, 0, 255, cv2.NORM_MINMAX)
+plt.plot(hist_H)
+plt.show()
 
 low = np.array([50, 0, 0])
 high = np.array([120, 255, 255])
