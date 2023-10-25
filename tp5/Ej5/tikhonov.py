@@ -10,10 +10,10 @@ from skimage.util import random_noise
 coins = data.coins()
 
 # Agregar ruido gaussiano a la imagen
-coins_noisy = random_noise(coins, mode='gaussian', var=0.01)
+coins_noisy = random_noise(coins, mode='gaussian', var=0.015)
 
 # Aplicar la restauración con regularización (en este caso, Tikhonov)
-coins_denoised = denoise_tv_chambolle(coins_noisy, weight=0.01, max_num_iter=2000)
+coins_denoised = denoise_tv_chambolle(coins_noisy, weight=0.1, max_num_iter=1000)
 
 # Mostrar las imágenes original, con ruido y restaurada
 plt.figure(figsize=(12, 4))

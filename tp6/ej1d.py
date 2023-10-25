@@ -5,7 +5,7 @@ import cv2
 image = cv2.imread('imagenes/monarch.jpg')
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-k = 3
+k = 6
 
 pixel_vals = image.reshape((-1,3))
 pixel_vals = np.float32(pixel_vals)

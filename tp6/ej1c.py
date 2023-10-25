@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Etapa 1
-im = cv2.imread('../imagenes/Girl_and_rose.jpg')
+im = cv2.imread('imagenes/Girl_and_rose.jpg')
 im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
 fig, axs = plt.subplots(2, 3)
 axs[0, 0].imshow(im)
