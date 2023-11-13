@@ -135,7 +135,7 @@ plt.show()
 # Balance de blancos
 mask = wbscalematrix(linear_bayer.shape[0], linear_bayer.shape[1], wb_multipliers, 'rggb')
 balanced_bayer = np.multiply(linear_bayer, mask)
-
+#balanced_bayer = linear_bayer
 plt.imshow(balanced_bayer, cmap='gray')
 plt.show()
 lin_rgb = debayering(balanced_bayer)
