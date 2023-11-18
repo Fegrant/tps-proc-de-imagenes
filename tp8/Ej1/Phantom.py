@@ -55,14 +55,3 @@ class Phantom:
 
         # Agregar la intensidad solo a la región de la elipse
         self.phantom[mask] += intensidad
-
-
-phantom = Phantom()
-phantom.create_ellipse_phantom()
-phantom.add_ellipse_phantom(centro_y=0.1)
-
-# Mostrar el phantom
-plt.imshow(phantom.phantom, cmap='Blues')
-plt.colorbar()
-plt.title('Phantom de Elipse')
-plt.show()
