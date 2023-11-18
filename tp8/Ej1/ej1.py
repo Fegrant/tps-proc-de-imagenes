@@ -17,11 +17,14 @@ def create_ellipse_phantom(intensidad, inclinacion, semi_eje_x, semi_eje_y, cent
     cy = (centro_y + 1) * size / 2
 
     # Generar puntos en la elipse
-    y, x = np.ogrid[-a:size - a, -b:size - b]
-    mask = (x * np.cos(theta) + y * np.sin(theta)) ** 2 / a ** 2 + (
-                y * np.cos(theta) - x * np.sin(theta)) ** 2 / b ** 2 <= 1
+    y, x = np.ogrid[0:size, 0:size]
+    x_rot = (x - cx) * np.cos(theta) - (y - cy) * np.sin(theta)
+    y_rot = (x - cx) * np.sin(theta) + (y - cy) * np.cos(theta)
 
-    # Agregar la intensidad a la región de la elipse
+    # Aplicar condición a cada punto individual
+    mask = (x_rot / a) ** 2 + (y_rot / b) ** 2 <= 1
+
+    # Agregar la intensidad solo a la región de la elipse
     phantom[mask] += intensidad
 
     return phantom
@@ -33,12 +36,12 @@ inclinacion = 180  # grados
 semi_eje_x = 0.3
 semi_eje_y = 0.4
 centro_x = 0.2
-centro_y = 0.5
+centro_y = 1
 
 phantom = create_ellipse_phantom(intensidad, inclinacion, semi_eje_x, semi_eje_y, centro_x, centro_y)
 
 # Mostrar el phantom
-plt.imshow(phantom, cmap='gray')
+plt.imshow(phantom, cmap='Blues')
 plt.colorbar()
 plt.title('Phantom de Elipse')
 plt.show()
