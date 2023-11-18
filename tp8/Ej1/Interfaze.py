@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import matplotlib
+from Phantom import Phantom
 
 matplotlib.use('TkAgg')
 
@@ -15,33 +16,11 @@ semi_eje_y = 0.4
 centro_x = 0.2
 centro_y = 0.5
 
-# Initialize a list to store the artists
-phantoms = []
-
-def create_ellipse_phantom(intensidad, inclinacion, semi_eje_x, semi_eje_y, centro_x, centro_y, size=256):
-    # Crear una imagen en blanco
-    phantom = np.zeros((size, size))
-
-    # Calcular los parámetros de la elipse
-    a = semi_eje_x * size / 2
-    b = semi_eje_y * size / 2
-    theta = np.radians(inclinacion)
-    cx = (centro_x + 1) * size / 2
-    cy = (centro_y + 1) * size / 2
-
-    # Generar puntos en la elipse
-    y, x = np.ogrid[-a:size - a, -b:size - b]
-    mask = (x * np.cos(theta) + y * np.sin(theta)) ** 2 / a ** 2 + (
-            y * np.cos(theta) - x * np.sin(theta)) ** 2 / b ** 2 <= 1
-
-    # Agregar la intensidad a la región de la elipse
-    phantom[mask] += intensidad
-
-    return phantom
+phantom = None
 
 
 def update_plot():
-    global phantoms  # Use the global imshow object
+    global phantom  # Use the global imshow object
 
     # Get the updated variable values
     intensidad = float(intensidad_var.get())
@@ -51,17 +30,14 @@ def update_plot():
     centro_x = float(centro_x_var.get())
     centro_y = float(centro_y_var.get())
 
-    # Create the ellipse phantom using the provided function
-    phantom = create_ellipse_phantom(intensidad, inclinacion, semi_eje_x, semi_eje_y, centro_x, centro_y)
-
-    if not phantoms:
-        phantoms.append(phantom)
-        plt.imshow(phantom, cmap='Blues')
+    if phantom is None:
+        phantom = Phantom(intensidad, inclinacion, semi_eje_x, semi_eje_y, centro_x, centro_y)
+        phantom.create_ellipse_phantom()
+        plt.imshow(phantom.phantom, cmap='Blues')
         plt.colorbar()
     else:
-        phantoms.append(phantom)
-        for p in phantoms:
-            plt.imshow(p, cmap='Blues')
+        phantom.add_ellipse_phantom(intensidad, inclinacion, semi_eje_x, semi_eje_y, centro_x, centro_y)
+        plt.imshow(phantom.phantom, cmap='Blues')
 
     plt.title('Phantom de Elipse')
     canvas.draw()
