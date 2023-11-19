@@ -67,3 +67,25 @@ inverse_radon_transform = iradon(radon_transform, theta=np.arange(start_angle, e
 plt.imshow(inverse_radon_transform, cmap='gray')
 plt.title('Transformada inversa de Radon')
 plt.show()
+
+
+def inverse_random_transform_filters(radon_transform, start_angle, end_angle, angle_step):
+
+    filter_types = ['ramp', 'shepp-logan', 'cosine']
+    interpolation = 'linear'  # Método de interpolación (puedes cambiarlo según tus necesidades)
+
+    # Crear subplots para mostrar imágenes reconstruidas con diferentes filtros
+    plt.figure(figsize=(15, 5))
+
+    for i, filter_type in enumerate(filter_types, 1):
+        # Aplicar la transformada inversa de Radon con el filtro actual
+        inverse_radon_transform = iradon(radon_transform, theta=np.arange(start_angle, end_angle, angle_step),
+                                        filter_name=filter_type, interpolation=interpolation)
+
+        # Mostrar la imagen reconstruida en un subplot
+        plt.subplot(1, len(filter_types), i)
+        plt.imshow(inverse_radon_transform, cmap='gray')
+        plt.title(f'Transformada inversa de Radon\nFiltro: {filter_type}')
+
+    plt.tight_layout()
+    plt.show()
