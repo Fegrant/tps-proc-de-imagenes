@@ -93,10 +93,9 @@ def update_plot3():
     interpolacion_3_value = interpolacion_3.get()
     filtro_3_value = filtro_3.get()
 
-
     if iradon_fig is None:
         iradon_fig = inverse_random_transform_filters(radon_fig, desde_3, hasta_3, paso_3, filtro_3_value,
-                                             interpolacion_3_value)
+                                                      interpolacion_3_value)
         ax3.imshow(iradon_fig, cmap='Reds')
         ax3.set_title('Phantom for Third Plot')
         ax3.colorbar = plt.colorbar(ax3.imshow(iradon_fig, cmap='Reds'))
