@@ -51,11 +51,11 @@ def update_plot():
     if phantom is None:
         phantom = Phantom(intensidad, inclinacion, semi_eje_x, semi_eje_y, centro_x, centro_y)
         phantom.create_ellipse_phantom()
-        ax1.imshow(phantom.phantom, cmap='Reds')
-        ax1.colorbar = plt.colorbar(ax1.imshow(phantom.phantom, cmap='Reds'))
+        ax1.imshow(phantom.phantom, cmap='hot')
+        ax1.colorbar = plt.colorbar(ax1.imshow(phantom.phantom, cmap='hot'))
     else:
         phantom.add_ellipse_phantom(intensidad, inclinacion, semi_eje_x, semi_eje_y, centro_x, centro_y)
-        ax1.imshow(phantom.phantom, cmap='Reds')
+        ax1.imshow(phantom.phantom, cmap='hot')
 
     plt.title('Phantom de Elipse')
     canvas1.draw()
@@ -72,12 +72,12 @@ def update_plot2():
 
     if radon_fig is None:
         radon_fig = radon(phantom.phantom, np.arange(desde, hasta, paso))
-        ax2.imshow(radon_fig, cmap='Reds')
+        ax2.imshow(radon_fig, cmap='hot')
         ax2.set_title('Radon')
         ax2.colorbar = plt.colorbar(ax2.imshow(radon_fig, cmap='Reds'))
     else:
         radon_fig = radon(phantom.phantom, np.arange(desde, hasta, paso))
-        ax2.imshow(radon_fig, cmap='Reds')
+        ax2.imshow(radon_fig, cmap='hot')
         ax2.set_title('Radon')
 
     canvas2.draw()
@@ -96,13 +96,13 @@ def update_plot3():
     if iradon_fig is None:
         iradon_fig = inverse_random_transform_filters(radon_fig, desde_3, hasta_3, paso_3, filtro_3_value,
                                                       interpolacion_3_value)
-        ax3.imshow(iradon_fig, cmap='Reds')
+        ax3.imshow(iradon_fig, cmap='hot')
         ax3.set_title('Phantom for Third Plot')
-        ax3.colorbar = plt.colorbar(ax3.imshow(iradon_fig, cmap='Reds'))
+        ax3.colorbar = plt.colorbar(ax3.imshow(iradon_fig, cmap='hot'))
     else:
         iradon_fig = inverse_random_transform_filters(radon_fig, desde_3, hasta_3, paso_3, filtro_3_value,
                                                       interpolacion_3_value)
-        ax3.imshow(iradon_fig, cmap='Reds')
+        ax3.imshow(iradon_fig, cmap='hot')
         ax3.set_title(f'Interpolación: {interpolacion_3_value} - Filtro: {filtro_3_value}')
 
     canvas3.draw()
