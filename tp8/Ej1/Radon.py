@@ -39,55 +39,56 @@ def radon(image, theta):
     return radon_image
 
 
-# Creación del phantom
-intensidad = 0.6
-inclinacion = 180  # grados
-semi_eje_x = 0.3
-semi_eje_y = 0.4
-centro_x = 0.2
-centro_y = 0.5
+# # Creación del phantom
+# intensidad = 0.6
+# inclinacion = 180  # grados
+# semi_eje_x = 0.3
+# semi_eje_y = 0.4
+# centro_x = 0.2
+# centro_y = 0.5
+#
+# phantom = Phantom(intensidad, inclinacion, semi_eje_x, semi_eje_y, centro_x, centro_y)
+# phantom.create_ellipse_phantom()
+#
+# start_angle = 0
+# end_angle = 180
+# angle_step = 1
+#
+# radon_transform = radon(phantom.phantom, np.arange(start_angle, end_angle, angle_step))
+#
+# plt.imshow(radon_transform, cmap='gray')
+# plt.title('Transformada de Radon')
+# plt.show()
+#
+# # Transformada inversa
+# filter_type = 'ramp'
+# interpolation = 'linear'
+#
+# inverse_radon_transform = iradon(radon_transform, theta=np.arange(start_angle, end_angle, angle_step), circle=False,
+#                                  filter_name=filter_type, interpolation=interpolation)
+#
+# plt.imshow(inverse_radon_transform, cmap='gray')
+# plt.title('Transformada inversa de Radon')
+# plt.show()
 
-phantom = Phantom(intensidad, inclinacion, semi_eje_x, semi_eje_y, centro_x, centro_y)
-phantom.create_ellipse_phantom()
 
-start_angle = 0
-end_angle = 180
-angle_step = 1
-
-radon_transform = radon(phantom.phantom, np.arange(start_angle, end_angle, angle_step))
-
-plt.imshow(radon_transform, cmap='gray')
-plt.title('Transformada de Radon')
-plt.show()
-
-# Transformada inversa
-filter_type = 'ramp'
-interpolation = 'linear'
-
-inverse_radon_transform = iradon(radon_transform, theta=np.arange(start_angle, end_angle, angle_step), circle=False,
-                                 filter_name=filter_type, interpolation=interpolation)
-
-plt.imshow(inverse_radon_transform, cmap='gray')
-plt.title('Transformada inversa de Radon')
-plt.show()
-
-
-def inverse_random_transform_filters(radon_transform, start_angle, end_angle, angle_step):
+def inverse_random_transform_filters(radon_transform, start_angle, end_angle, angle_step, filter_type,
+                                     interpolation_method):
     # Seleccionar parámetros para la transformada inversa de Radon
-    filter_types = ['ramp', 'shepp-logan', 'cosine']
-    interpolation_methods = ['nearest', 'linear', 'cubic']
+    # filter_types = ['ramp', 'shepp-logan', 'cosine']
+    # interpolation_methods = ['nearest', 'linear', 'cubic']
 
     # Calcular la cantidad de subplots necesarios
-    num_subplots = len(filter_types) * len(interpolation_methods)
+    # num_subplots = len(filter_types) * len(interpolation_methods)
 
-    for i, filter_type in enumerate(filter_types, 1):
-        for j, interp_method in enumerate(interpolation_methods, 1):
-            # Aplicar la transformada inversa de Radon con el filtro actual
-            inverse_radon_transform = iradon(radon_transform, theta=np.arange(start_angle, end_angle, angle_step),
-                                             filter_name=filter_type, interpolation=interp_method)
+    # for i, filter_type in enumerate(filter_types, 1):
+    #     for j, interp_method in enumerate(interpolation_methods, 1):
+    # Aplicar la transformada inversa de Radon con el filtro actual
+    return iradon(radon_transform, theta=np.arange(start_angle, end_angle, angle_step),
+                  filter_name=filter_type, interpolation=interpolation_method)
 
-            # Mostrar cada imagen por separado
-            plt.imshow(inverse_radon_transform, cmap='gray', vmin=phantom.min(),
-                       vmax=phantom.max())  # Escala consistente
-            plt.title(f'Interpolación: {interp_method} - Filtro: {filter_type}')
-            plt.show()
+    # Mostrar cada imagen por separado
+    # plt.imshow(inverse_radon_transform, cmap='gray', vmin=phantom.phantom.min(),
+    #            vmax=phantom.phantom.max())  # Escala consistente
+    # plt.title(f'Interpolación: {interpolation_method} - Filtro: {filter_type}')
+    # plt.show()

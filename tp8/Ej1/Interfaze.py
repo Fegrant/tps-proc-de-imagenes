@@ -5,7 +5,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import matplotlib
 from Phantom import Phantom
-from Radon import radon,inverse_radon_transform
+from Radon import radon, inverse_random_transform_filters
 
 matplotlib.use('TkAgg')
 
@@ -34,8 +34,8 @@ hasta_3 = 360
 interpolacion_options = ['nearest', 'linear', 'cubic']
 filtro_options = ['ramp', 'shepp-logan', 'cosine']
 
-
 iradon_fig = None
+
 
 def update_plot():
     global phantom  # Use the global imshow object
@@ -93,19 +93,21 @@ def update_plot3():
     interpolacion_3_value = interpolacion_3.get()
     filtro_3_value = filtro_3.get()
 
-    # Your calculation logic for the third plot goes here
-    # Example: Create a phantom based on the provided variables
+
     if iradon_fig is None:
-        iradon_fig = inverse_radon_transform(radon_fig,desde_3, hasta_3, paso_3)  # Replace this with your logic
+        iradon_fig = inverse_random_transform_filters(radon_fig, desde_3, hasta_3, paso_3, filtro_3_value,
+                                             interpolacion_3_value)
         ax3.imshow(iradon_fig, cmap='Reds')
         ax3.set_title('Phantom for Third Plot')
         ax3.colorbar = plt.colorbar(ax3.imshow(iradon_fig, cmap='Reds'))
     else:
-        iradon_fig = inverse_radon_transform(radon_fig, desde_3, hasta_3, paso_3)  # Replace this with your logic
+        iradon_fig = inverse_random_transform_filters(radon_fig, desde_3, hasta_3, paso_3, filtro_3_value,
+                                                      interpolacion_3_value)
         ax3.imshow(iradon_fig, cmap='Reds')
-        ax3.set_title('Phantom for Third Plot')
+        ax3.set_title(f'Interpolación: {interpolacion_3_value} - Filtro: {filtro_3_value}')
 
     canvas3.draw()
+
 
 # Create the main application window
 root = tk.Tk()
