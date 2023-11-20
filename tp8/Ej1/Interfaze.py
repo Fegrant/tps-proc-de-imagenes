@@ -5,7 +5,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import matplotlib
 from Phantom import Phantom
-from Radon import radon
+from Radon import radon,inverse_radon_transform
 
 matplotlib.use('TkAgg')
 
@@ -35,7 +35,7 @@ interpolacion_options = ['nearest', 'linear', 'cubic']
 filtro_options = ['ramp', 'shepp-logan', 'cosine']
 
 
-phantom3 = None
+iradon_fig = None
 
 def update_plot():
     global phantom  # Use the global imshow object
@@ -76,16 +76,16 @@ def update_plot2():
         ax2.set_title('Radon')
         ax2.colorbar = plt.colorbar(ax2.imshow(radon_fig, cmap='Reds'))
     else:
-        # Update the phantom based on the modified variables
-        # Replace this with your logic
-        radon_fig.update_phantom(desde, paso, hasta, angulo)
+        radon_fig = radon(phantom.phantom, np.arange(desde, hasta, paso))
         ax2.imshow(radon_fig, cmap='Reds')
+        ax2.set_title('Radon')
 
     canvas2.draw()
 
 
 def update_plot3():
-    global phantom3
+    global iradon_fig
+    global radon_fig
 
     desde_3 = float(desde_var_3.get())
     paso_3 = float(paso_var_3.get())
@@ -95,16 +95,15 @@ def update_plot3():
 
     # Your calculation logic for the third plot goes here
     # Example: Create a phantom based on the provided variables
-    if phantom3 is None:
-        phantom3 = Phantom()  # Replace this with your logic
-        ax3.imshow(phantom3.phantom, cmap='Reds')
+    if iradon_fig is None:
+        iradon_fig = inverse_radon_transform(radon_fig,desde_3, hasta_3, paso_3)  # Replace this with your logic
+        ax3.imshow(iradon_fig, cmap='Reds')
         ax3.set_title('Phantom for Third Plot')
-        ax3.colorbar = plt.colorbar(ax3.imshow(phantom3.phantom, cmap='Reds'))
+        ax3.colorbar = plt.colorbar(ax3.imshow(iradon_fig, cmap='Reds'))
     else:
-        # Update the phantom based on the modified variables
-        # Replace this with your logic
-        phantom3.update_phantom(desde_3, paso_3, hasta_3, interpolacion_3_value, filtro_3_value)
-        ax3.imshow(phantom3.phantom, cmap='Reds')
+        iradon_fig = inverse_radon_transform(radon_fig, desde_3, hasta_3, paso_3)  # Replace this with your logic
+        ax3.imshow(iradon_fig, cmap='Reds')
+        ax3.set_title('Phantom for Third Plot')
 
     canvas3.draw()
 
