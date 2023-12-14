@@ -54,4 +54,4 @@ max_val = np.max(image_final)
 image_adjusted = ((image_final - min_val) / (max_val - min_val) * 255).astype(np.uint8)
 
 # Display the final image
-cv2.imwrite('homomorphicImageLn.jpg', image_adjusted)
+cv2.imwrite('results/homomorphicImageLn.jpg', image_adjusted)

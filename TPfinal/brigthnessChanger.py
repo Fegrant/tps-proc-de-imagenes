@@ -1,11 +1,11 @@
 from PIL import Image, ImageEnhance
 
 # Open the image
-image = Image.open('../image_sources/lena_gray.tif')
+image = Image.open('results/contrast1.5.jpg')
 
 # Create an ImageEnhance object and adjust the brightness (factor > 1 increases brightness, factor < 1 decreases
 # brightness)
-factor = 1.5 # You can adjust this value
+factor = 1.25 # You can adjust this value
 enhancer = ImageEnhance.Brightness(image)
 adjusted_image = enhancer.enhance(factor)
 
