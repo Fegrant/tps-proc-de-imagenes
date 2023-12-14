@@ -55,7 +55,7 @@ def update_plot():
         ax1.colorbar = plt.colorbar(im)
     else:
         phantom.add_ellipse_phantom(intensidad, inclinacion, semi_eje_x, semi_eje_y, centro_x, centro_y)
-        ax1.imshow(phantom.phantom, cmap='hot')
+        im = ax1.imshow(phantom.phantom, cmap='hot', vmin=0, vmax=1)
 
     plt.title('Phantom de Elipse')
     canvas1.draw()
