@@ -1,57 +1,59 @@
 import numpy as np
 import cv2
 
+color_image = cv2.imread('IMG_6932.png').astype(np.float64)
+
+# Parameters
 cutoff = 10
 order = 2
-
-image = cv2.imread('IMG_6932.png')
-
-gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY).astype(np.float64)
-
-x, y = gray_image.shape
-
-# Add a small offset to avoid division by zero
-epsilon = 1e-8  # Small positive constant
-gray_image_offset = gray_image + epsilon
-
-# Calculate the logarithm
-image_logued = np.log(1 + gray_image_offset)
-
-# DFT
-image_dft = np.fft.fft2(image_logued)
-
-# Filter
-A = np.zeros((x, y))
-H = np.zeros((x, y))
-d = cutoff
-n = order
-
-for i in range(x):
-    for j in range(y):
-        A[i, j] = np.sqrt((i - x / 2) ** 2 + (j - y / 2) ** 2)
-        if A[i, j] == 0:
-            H[i, j] = 0  # Handle division by zero by setting H to a default value (0 in this case)
-        else:
-            H[i, j] = 1 / (1 + ((d / A[i, j]) ** (2 * n)))
-
 Yh = 0.0999
 Yl = 1.01
 
-H = ((Yl - Yh) * H) + Yh
-H = 1 - H
+homomorphic_image = np.zeros(color_image.shape)
 
-image_f = H * image_dft
+for i in range(color_image.shape[2]):
+    color_channel = color_image[:, :, i]
 
-# Inverse DFT
-image_n = np.abs(np.fft.ifft2(image_f))
+    # Add a small offset to avoid division by zero
+    epsilon = 1e-8
+    color_channel_offset = color_channel + epsilon
 
-# Inverse log
-image_final = np.exp(image_n)
+    # Calculate the logarithm
+    color_channel_logued = np.log(1 + color_channel_offset)
 
-# Apply the full dynamic range display (similar to MATLAB's imshow(_, []))
-min_val = np.min(image_final)
-max_val = np.max(image_final)
-image_adjusted = ((image_final - min_val) / (max_val - min_val) * 255).astype(np.uint8)
+    # DFT
+    color_channel_dft = np.fft.fft2(color_channel_logued)
 
-# Display the final image
-cv2.imwrite('results/homomorphicImageLn.jpg', image_adjusted)
+    # Filter
+    x, y = color_channel.shape
+    A = np.zeros((x, y))
+    H = np.zeros((x, y))
+    d = cutoff
+    n = order
+
+    for j in range(x):
+        for k in range(y):
+            A[j, k] = np.sqrt((j - x / 2) ** 2 + (k - y / 2) ** 2)
+            if A[j, k] == 0:
+                H[j, k] = 0
+            else:
+                H[j, k] = 1 / (1 + ((d / A[j, k]) ** (2 * n)))
+
+    H = ((Yl - Yh) * H) + Yh
+    H = 1 - H
+
+    color_channel_f = H * color_channel_dft
+
+    # Inverse DFT
+    color_channel_n = np.abs(np.fft.ifft2(color_channel_f))
+
+    # Inverse log
+    color_channel_final = np.exp(color_channel_n)
+
+    # Update the original color channel with the processed values
+    homomorphic_image[:, :, i] = color_channel_final
+
+
+homomorphic_image = ((homomorphic_image - np.min(homomorphic_image)) / (np.max(homomorphic_image) - np.min(homomorphic_image)) * 255).astype(np.uint8)
+
+cv2.imwrite('homomorphicColor.png', homomorphic_image)
