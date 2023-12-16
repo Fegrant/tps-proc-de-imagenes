@@ -56,4 +56,4 @@ for i in range(color_image.shape[2]):
 
 homomorphic_image = ((homomorphic_image - np.min(homomorphic_image)) / (np.max(homomorphic_image) - np.min(homomorphic_image)) * 255).astype(np.uint8)
 
-cv2.imwrite('homomorphicColor.png', homomorphic_image)
+cv2.imwrite('homomorphicColor2.png', homomorphic_image)
